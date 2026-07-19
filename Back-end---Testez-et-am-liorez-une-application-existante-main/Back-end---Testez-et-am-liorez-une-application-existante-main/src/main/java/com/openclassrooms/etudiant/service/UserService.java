@@ -10,8 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,7 +39,7 @@ public class UserService {
         Assert.notNull(password, "Password must not be null");
         Optional<User> user = userRepository.findByLogin(login);
         if (user.isPresent()
-        && passwordEncoder.matches(password, user.get().getPassword())) {
+                && passwordEncoder.matches(password, user.get().getPassword())) {
             UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                     .username(user.get().getLogin())
                     .password(user.get().getPassword())
