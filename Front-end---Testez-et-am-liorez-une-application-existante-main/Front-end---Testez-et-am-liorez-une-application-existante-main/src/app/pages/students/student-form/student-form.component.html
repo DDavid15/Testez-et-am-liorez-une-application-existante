@@ -1,0 +1,114 @@
+<section class="student-form-page">
+  <a routerLink="/students">
+    ← Retour à la liste
+  </a>
+
+  <h1>
+    {{ editMode ? 'Modifier un étudiant' : 'Ajouter un étudiant' }}
+  </h1>
+
+  <p *ngIf="loading && editMode">
+    Chargement des informations...
+  </p>
+
+  <p
+    *ngIf="errorMessage"
+    class="error-message"
+  >
+    {{ errorMessage }}
+  </p>
+
+  <form
+    *ngIf="!loading || !editMode"
+    [formGroup]="studentForm"
+    (ngSubmit)="onSubmit()"
+    novalidate
+  >
+    <div class="form-field">
+      <label for="firstName">
+        Prénom
+      </label>
+
+      <input
+        id="firstName"
+        type="text"
+        formControlName="firstName"
+      >
+
+      <p
+        *ngIf="submitted && form['firstName'].errors?.['required']"
+        class="validation-message"
+      >
+        Le prénom est obligatoire.
+      </p>
+    </div>
+
+    <div class="form-field">
+      <label for="lastName">
+        Nom
+      </label>
+
+      <input
+        id="lastName"
+        type="text"
+        formControlName="lastName"
+      >
+
+      <p
+        *ngIf="submitted && form['lastName'].errors?.['required']"
+        class="validation-message"
+      >
+        Le nom est obligatoire.
+      </p>
+    </div>
+
+    <div class="form-field">
+      <label for="email">
+        Email
+      </label>
+
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+      >
+
+      <p
+        *ngIf="submitted && form['email'].errors?.['required']"
+        class="validation-message"
+      >
+        L’adresse email est obligatoire.
+      </p>
+
+      <p
+        *ngIf="
+          submitted &&
+          !form['email'].errors?.['required'] &&
+          form['email'].errors?.['email']
+        "
+        class="validation-message"
+      >
+        Le format de l’adresse email est invalide.
+      </p>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="submit"
+        [disabled]="loading"
+      >
+        {{
+          loading
+            ? 'Enregistrement...'
+            : editMode
+              ? 'Enregistrer les modifications'
+              : 'Ajouter l’étudiant'
+        }}
+      </button>
+
+      <a routerLink="/students">
+        Annuler
+      </a>
+    </div>
+  </form>
+</section>

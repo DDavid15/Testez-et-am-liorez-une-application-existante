@@ -1,0 +1,84 @@
+<section class="student-page">
+  <header class="student-header">
+    <div>
+      <h1>Gestion des étudiants</h1>
+      <p>Consultez et gérez les étudiants enregistrés.</p>
+    </div>
+
+    <a
+      class="primary-button"
+      routerLink="/students/new"
+    >
+      Ajouter un étudiant
+    </a>
+  </header>
+
+  <p
+    *ngIf="loading"
+    class="information-message"
+  >
+    Chargement des étudiants...
+  </p>
+
+  <p
+    *ngIf="errorMessage"
+    class="error-message"
+  >
+    {{ errorMessage }}
+  </p>
+
+  <p
+    *ngIf="!loading && !errorMessage && students.length === 0"
+    class="information-message"
+  >
+    Aucun étudiant enregistré.
+  </p>
+
+  <div
+    *ngIf="!loading && students.length > 0"
+    class="table-container"
+  >
+    <table>
+      <thead>
+        <tr>
+          <th>Identifiant</th>
+          <th>Prénom</th>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let student of students">
+          <td>{{ student.id }}</td>
+          <td>{{ student.firstName }}</td>
+          <td>{{ student.lastName }}</td>
+          <td>{{ student.email }}</td>
+
+          <td class="actions">
+            <a
+              [routerLink]="['/students', student.id]"
+            >
+              Consulter
+            </a>
+
+            <a
+              [routerLink]="['/students', student.id, 'edit']"
+            >
+              Modifier
+            </a>
+
+            <button
+              type="button"
+              class="delete-button"
+              (click)="deleteStudent(student)"
+            >
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../shared/material.module';
 import { UserService } from '../../core/service/user.service';
 import { Login } from '../../core/models/Login';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { Login } from '../../core/models/Login';
 export class LoginComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private userService = inject(UserService);
+  private router = inject(Router);
 
   loginForm: FormGroup = new FormGroup({});
   submitted: boolean = false;
@@ -53,6 +55,8 @@ export class LoginComponent implements OnInit {
         this.loading = false;
         sessionStorage.setItem('authToken', token);
         this.successMessage = 'Connexion réussie.';
+
+        this.router.navigate(['/students']);
       },
       error: () => {
         this.loading = false;

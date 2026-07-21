@@ -1,0 +1,50 @@
+<section class="student-detail-page">
+  <a routerLink="/students">
+    ← Retour à la liste
+  </a>
+
+  <p *ngIf="loading">
+    Chargement de l'étudiant...
+  </p>
+
+  <p
+    *ngIf="errorMessage"
+    class="error-message"
+  >
+    {{ errorMessage }}
+  </p>
+
+  <div
+    *ngIf="student && !loading"
+    class="student-card"
+  >
+    <h1>Détail de l'étudiant</h1>
+
+    <p>
+      <strong>Identifiant :</strong>
+      {{ student.id }}
+    </p>
+
+    <p>
+      <strong>Prénom :</strong>
+      {{ student.firstName }}
+    </p>
+
+    <p>
+      <strong>Nom :</strong>
+      {{ student.lastName }}
+    </p>
+
+    <p>
+      <strong>Email :</strong>
+      {{ student.email }}
+    </p>
+
+    <a
+      class="edit-button"
+      [routerLink]="['/students', student.id, 'edit']"
+    >
+      Modifier
+    </a>
+  </div>
+</section>
