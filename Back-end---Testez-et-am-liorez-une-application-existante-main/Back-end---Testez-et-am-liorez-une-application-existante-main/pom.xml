@@ -31,6 +31,7 @@
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<lombok.version>1.18.32</lombok.version>
 		<testcontainers.version>1.21.4</testcontainers.version>
+		<jacoco.version>0.8.15</jacoco.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -159,6 +160,58 @@
 					</excludes>
 				</configuration>
 
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco.version}</version>
+
+				<executions>
+					<!-- Active l'agent JaCoCo pendant l'exécution des tests. -->
+					<execution>
+						<id>prepare-agent</id>
+
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+
+					<!-- Génère le rapport de couverture pendant la phase verify. -->
+					<execution>
+						<id>generate-coverage-report</id>
+						<phase>verify</phase>
+
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+
+					<!-- Vérifie que la couverture globale atteint au moins 80 %. -->
+					<execution>
+						<id>check-coverage</id>
+						<phase>verify</phase>
+
+						<goals>
+							<goal>check</goal>
+						</goals>
+
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.80</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

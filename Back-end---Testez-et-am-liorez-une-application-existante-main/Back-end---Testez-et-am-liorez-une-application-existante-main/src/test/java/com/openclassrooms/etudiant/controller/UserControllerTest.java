@@ -19,7 +19,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.openclassrooms.etudiant.dto.LoginRequestDTO;
+import org.springframework.test.web.servlet.MvcResult;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 public class UserControllerTest {
 
     private static final String URL = "/api/register";
+    private static final String LOGIN_URL = "/api/login";
     private static final String FIRST_NAME = "John";
     private static final String LAST_NAME = "Doe";
     private static final String LOGIN = "login";
@@ -115,5 +119,44 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @Test
+    void loginUserSuccessful() throws Exception {
+        // GIVEN : un utilisateur enregistré dans la base de données
+        User user = new User();
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setLogin(LOGIN);
+        user.setPassword(PASSWORD);
+
+        userService.register(user);
+
+        LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
+        loginRequestDTO.setLogin(LOGIN);
+        loginRequestDTO.setPassword(PASSWORD);
+
+        String loginRequestBody = objectMapper.writeValueAsString(loginRequestDTO);
+        assertThat(loginRequestBody).isNotNull();
+
+        // WHEN : l'utilisateur appelle l'API de connexion
+        MvcResult result = mockMvc.perform(
+            MockMvcRequestBuilders.post(LOGIN_URL)
+            .content(loginRequestBody)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+        )
+            // THEN : l'API retourne un token JWT
+            .andDo(print())
+            .andExpect(
+                    MockMvcResultMatchers.status().isOk()
+            )
+            .andReturn();
+
+        String jwtToken =
+                result.getResponse().getContentAsString();
+
+        assertThat(jwtToken).isNotBlank();
+        assertThat(jwtToken.split("\\.")).hasSize(3);
     }
 }
